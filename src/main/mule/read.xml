@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a39b5792-5ecd-4aa0-a96e-5a2cbb1a5787" >
+		<http:listener-connection host="localhost" port="8025" />
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="8c9ad658-f7b3-451d-931a-53587ab40c6b" />
+	<flow name="readFlow" doc:id="300d6c70-9de9-4d01-91dd-5a56d7caa11a" >
+		<http:listener doc:name="Listener" doc:id="5a152354-99ea-42f1-8d87-5ccc37449da5" config-ref="HTTP_Listener_config" path="/read"/>
+		<logger level="INFO" doc:name="Logger" doc:id="fe092901-c1b5-4747-ac7d-de43cd55e286" message="#[payload]"/>
+		<file:read doc:name="Read" doc:id="0495dd66-f1bc-4755-8227-5a314955da6f" config-ref="File_Config" path="C:\New folder\output\new.file.txt"/>
+		<ee:transform doc:name="Transform Message" doc:id="c76f5991-c5b0-4501-b28f-fb07335af1ea" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="e471ca63-8011-4103-acf2-45799bc01cf1" message="#[payload]"/>
+	</flow>
+</mule>
